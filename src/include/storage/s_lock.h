@@ -337,6 +337,18 @@ tas(volatile slock_t *lock)
 
 #define S_UNLOCK(lock) __sync_lock_release(lock)
 
+#define SPIN_DELAY() spin_delay()
+
+static __inline__ void
+spin_delay(void)
+{
+	/*
+	 * Test using an ISB instruction here instead of a NOP
+	 */
+	__asm__ __volatile__(
+		" isb;			\n");
+}
+
 #endif	 /* HAVE_GCC__SYNC_INT32_TAS */
 #endif	 /* __arm__ || __arm || __aarch64__ || __aarch64 */
 
